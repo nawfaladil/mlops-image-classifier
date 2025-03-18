@@ -1,0 +1,13 @@
+services:
+  airflow:
+    build: ./airflow
+    container_name: airflow_container
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags  # Partage les DAGs entre l'hôte et le conteneur
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    restart: always
