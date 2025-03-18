@@ -1,13 +1,37 @@
 services:
+  mysql:
+    build: ./data/metadata  # Utilise le Dockerfile MySQL dans le dossier database
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mlops_db
+      MYSQL_USER: mlops_user
+      MYSQL_PASSWORD: mlops_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
   airflow:
     build: ./airflow
     container_name: airflow_container
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "8085:8080"
     volumes:
       - ./airflow/dags:/opt/airflow/dags  # Partage les DAGs entre l'hôte et le conteneur
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     restart: always
+
+volumes:
+  mysql_data:

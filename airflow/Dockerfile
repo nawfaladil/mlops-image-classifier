@@ -3,7 +3,7 @@ FROM apache/airflow:2.6.0
 USER airflow
 
 # Installer des bibliothèques supplémentaires (MySQL, Minio, Requests)
-RUN pip install --no-cache-dir mysql-connector-python boto3 requests
+RUN pip install --no-cache-dir pymysql mysql-connector-python boto3 requests
 
 # Copier les DAGs dans le dossier Airflow
 USER root
