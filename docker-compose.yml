@@ -23,6 +23,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      minio:
+        condition: service_started
     ports:
       - "8085:8080"
     volumes:
@@ -31,7 +33,22 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW_CONN_MINIO_CONN=aws://minioadmin:minioadmin@?extra__aws__endpoint_url=http%3A%2F%2Fminio:9000
+      - AIRFLOW_CONN_MYSQL_CONN_ID=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
     restart: always
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # Console web MinIO
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./minio_data:/data
 
 volumes:
   mysql_data:
+  minio_data:
