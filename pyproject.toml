@@ -7,7 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+boto3 = "^1.37.18"
+pillow = "^11.1.0"
+matplotlib = "^3.10.1"
+torchvision = "^0.21.0"
 
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]
