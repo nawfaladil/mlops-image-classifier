@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+mlflow
+torch
+torchvision
+Pillow
+boto3
+python-multipart

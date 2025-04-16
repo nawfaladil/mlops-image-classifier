@@ -37,7 +37,7 @@ services:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - AIRFLOW_CONN_MINIO_CONN=aws://minioadmin:minioadmin@minio:9000?extra__aws__endpoint_url=http%3A%2F%2Fminio:9000
       - AIRFLOW_CONN_MYSQL_CONN_ID=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
-      - MLFLOW_TRACKING_URI=http://mlflow_container:5000
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     restart: always
   minio:
     image: minio/minio
@@ -67,6 +67,26 @@ services:
       --host 0.0.0.0
     volumes:
       - ./mlflow/mlflow_db:/mlflow_db
+  fastapi:
+    build: ./fastapi  # Path to the directory with your FastAPI Dockerfile and app
+    container_name: fastapi
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mlflow  # If your API depends on mlflow being available
+    environment:
+      # Optionally, you can pass MLFLOW and other configuration as environment variables if needed
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+  gradio:
+    build: ./gradio  # Directory where your Gradio frontend code and Dockerfile are located
+    container_name: gradio
+    restart: always
+    ports:
+      - "7860:7860"
+    depends_on:
+      - fastapi
 
 volumes:
   mysql_data:
