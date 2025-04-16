@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-deployment
+  labels:
+    app: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: fastapi
+          image: mlops-image-classifier-fastapi:latest
+          imagePullPolicy: IfNotPresent
+          # override the image's CMD to listen on 8001 instead of 8000
+          command: ["uvicorn"]
+          args:
+          - "app:app"
+          - "--host"
+          - "0.0.0.0"
+          - "--port"
+          - "8001"
+          ports:
+            - containerPort: 8001
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://localhost:5000"
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: "http://localhost:9000"
+            - name: AWS_ACCESS_KEY_ID
+              value: "minioadmin"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "minioadmin"
+          # Add any other required environment variables here.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: fastapi
+  ports:
+    - protocol: TCP
+      port: 8000       # The port by which the service is exposed in the cluster
+      targetPort: 8001   # The container port where your FastAPI app listens
