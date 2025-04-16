@@ -1,0 +1,1 @@
+in this notebook we take some images and augment them to simulate new data, that way we could trigger our retraining dag.
