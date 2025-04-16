@@ -1,21 +1,32 @@
-FROM apache/airflow:2.6.0
+# Use the official Apache Airflow image as base.
+FROM apache/airflow:2.10.5
 
+# Switch back to the airflow user.
 USER airflow
 
-# Installer des bibliothèques supplémentaires (MySQL, Minio, Requests)
-RUN pip install --no-cache-dir pymysql mysql-connector-python boto3 requests torch torchvision Pillow==9.3.0
+# Install additional Python libraries as root.
+RUN pip install --no-cache-dir \
+    pymysql \
+    mysql-connector-python \
+    boto3 \
+    requests \
+    torch \
+    torchvision \
+    Pillow==10.1 \
+    mlflow
 
-# Copier les DAGs dans le dossier Airflow
+
+
+# Copy DAGs to the Airflow DAGs folder.
 USER root
 COPY dags/ /opt/airflow/dags/
 
-# # Copier le code source dans un dossier, par exemple /opt/mlops/
+# (Optional) Add additional code or update PYTHONPATH if needed.
+# For example:
 # COPY ./src/ /opt/mlops/
-
-# # Ajouter /opt/mlops au PYTHONPATH pour qu'il soit visible par Python
 # ENV PYTHONPATH="/opt/mlops:${PYTHONPATH}"
 
 USER airflow
 
-# Démarrer Airflow standalone (Web UI + Scheduler)
+# Start Airflow standalone (includes webserver and scheduler).
 ENTRYPOINT ["airflow", "standalone"]

@@ -11,6 +11,7 @@ boto3 = "^1.37.18"
 pillow = "^11.1.0"
 matplotlib = "^3.10.1"
 torchvision = "^0.21.0"
+mlflow = "^2.21.3"
 
 
 [tool.poetry.group.dev.dependencies]
