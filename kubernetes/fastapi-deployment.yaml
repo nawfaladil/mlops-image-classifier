@@ -18,8 +18,8 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: fastapi
-          image: mlops-image-classifier-fastapi:latest
-          imagePullPolicy: IfNotPresent
+          image: nawfaladil/mlops-fastapi:latest
+          imagePullPolicy: Always
           # override the image's CMD to listen on 8001 instead of 8000
           command: ["uvicorn"]
           args:
