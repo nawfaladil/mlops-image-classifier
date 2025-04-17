@@ -68,7 +68,7 @@ services:
     volumes:
       - ./mlflow/mlflow_db:/mlflow_db
   fastapi:
-    build: ./fastapi  # Path to the directory with your FastAPI Dockerfile and app
+    build: ./FastAPI  # Path to the directory with your FastAPI Dockerfile and app
     container_name: fastapi
     restart: always
     ports:
