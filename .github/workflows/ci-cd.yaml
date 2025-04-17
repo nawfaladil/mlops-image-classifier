@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-latest   # or your self-hosted label
 
     steps:
       - name: Checkout code
@@ -32,9 +32,13 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/mlops-fastapi:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/mlops-fastapi:${{ github.sha }}
 
-      - name: Set Kubernetes context
+      # ─────────── KUBECTL SETUP ───────────
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubeconfig from secret
         run: |
-          kubectl config use-context docker-desktop
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
 
       - name: Update Deployment image
         run: |
@@ -45,4 +49,3 @@ jobs:
       - name: Wait for rollout to finish
         run: |
           kubectl rollout status deployment/fastapi-deployment --timeout=2m
-
