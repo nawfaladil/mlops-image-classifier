@@ -4,31 +4,33 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   test:
-  runs-on: ubuntu-latest
-  steps:
-    # 1) grab your code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    runs-on: ubuntu-latest
+    steps:
+      # 1) grab your code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # 2) bring up Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+      # 2) bring up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-    # 3) install your dependencies and dev‑dependencies
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r FastAPI/requirements.txt
-        pip install -r tests/requirements-dev.txt
+      # 3) install your dependencies and dev‑dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r FastAPI/requirements.txt
+          pip install -r tests/requirements-dev.txt
 
-    # 4) run your unit tests
-    - name: Run pytest
-      run: |
-        pytest tests --maxfail=1 --disable-warnings -q
+      # 4) run your unit tests
+      - name: Run pytest
+        run: |
+          pytest tests --maxfail=1 --disable-warnings -q
+
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -37,10 +39,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -51,4 +53,5 @@ jobs:
           context: ./FastAPI
           file: ./FastAPI/Dockerfile
           push: true
-          tags: nawfaladil/mlops-fastapi:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mlops-fastapi:latest
