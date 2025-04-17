@@ -23,7 +23,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          load: true
+          context: ./FastAPI
+          file: ./FastAPI/Dockerfile
+          push: true
           tags: nawfaladil/mlops-fastapi:latest
 
   deploy:
