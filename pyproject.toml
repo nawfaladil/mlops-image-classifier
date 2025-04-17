@@ -16,6 +16,7 @@ fastapi = "^0.115.12"
 uvicorn = "^0.34.1"
 python-multipart = "^0.0.20"
 gradio = "^5.25.2"
+pytest = "^8.3.5"
 
 
 [tool.poetry.group.dev.dependencies]
