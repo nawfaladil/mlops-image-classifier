@@ -23,9 +23,9 @@ jobs:
         run: |
           docker compose up -d
           # wait for MLflow API
-          until curl --silent --fail http://localhost:5000/api/2.0/mlflow/experiments/list; do echo "⏳ waiting for MLflow…"; sleep 5; done
-          # wait for FastAPI
-          until curl --silent --fail http://localhost:8000/; do echo "⏳ waiting for FastAPI…"; sleep 2; done
+          # until curl --silent --fail http://localhost:5000/api/2.0/mlflow/experiments/list; do echo "⏳ waiting for MLflow…"; sleep 5; done
+          # # wait for FastAPI
+          # until curl --silent --fail http://localhost:8000/; do echo "⏳ waiting for FastAPI…"; sleep 2; done
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
