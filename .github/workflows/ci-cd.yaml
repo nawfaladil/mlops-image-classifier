@@ -21,7 +21,7 @@ jobs:
 
       - name: Start services
         run: |
-          docker compose up -d minio mlflow fastapi
+          docker compose up -d
           # wait for MLflow API
           until curl --silent --fail http://localhost:5000/api/2.0/mlflow/experiments/list; do echo "⏳ waiting for MLflow…"; sleep 5; done
           # wait for FastAPI
