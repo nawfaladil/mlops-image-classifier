@@ -35,9 +35,29 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Deploy to KinD
+      - name: Deploy & Rollout FastAPI
         run: |
+          # Apply your manifest (creates or updates)
           kubectl apply -f kubernetes/fastapi-deployment.yaml
-          kubectl set image deployment/fastapi-deployment \
-            fastapi=mlops-fastapi:${{ github.sha }}
-          kubectl rollout status deployment/fastapi-deployment --timeout=2m
+
+          # Either set image or do a restart:
+          #kubectl set image deployment/fastapi-deployment \
+          #  fastapi=mlops-fastapi:${{ github.sha }} \
+          #  --record
+          kubectl rollout restart deployment/fastapi-deployment
+
+          # Wait up to 5 minutes for it to become ready
+          kubectl rollout status deployment/fastapi-deployment --timeout=5m
+
+      - name: Dump pods on failure
+        if: failure()
+        run: |
+          echo "=== PODS ==="
+          kubectl get pods -o wide
+          echo "=== DESCRIBE ==="
+          kubectl describe pods
+          echo "=== LOGS ==="
+          for p in $(kubectl get pods -o name); do
+            echo "--- logs from $p ---"
+            kubectl logs --tail 50 $p || true
+          done
