@@ -39,8 +39,9 @@ jobs:
       - name: Deploy to Kubernetes
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        working-directory: ./kubernetes
         run: |
-          kubectl apply -f kubernetes/fastapi-deployment.yaml
+          kubectl apply -f fastapi-deployment.yaml
 
 # jobs:
 #   build-and-deploy:
