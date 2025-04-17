@@ -1,4 +1,4 @@
-name: Build, Load & Deploy FastAPI (KinD)
+name: Build, Load & Deploy FastAPI
 
 on:
   push:
@@ -37,6 +37,7 @@ jobs:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
           kubectl apply -f kubernetes/fastapi-deployment.yaml
+
 # jobs:
 #   build-and-deploy:
 #     runs-on: ubuntu-latest
