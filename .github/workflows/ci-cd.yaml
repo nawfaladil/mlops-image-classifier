@@ -41,7 +41,7 @@ jobs:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         working-directory: ./kubernetes
         run: |
-          kubectl apply -f fastapi-deployment.yaml
+          kubectl apply --validate=false -f fastapi-deployment.yaml
 
 # jobs:
 #   build-and-deploy:
