@@ -13,8 +13,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      
+      - name: Build all service images
+        run: |
+          # this will rebuild your local ./mlflow and ./minio Dockerfiles too
+          docker compose build
 
-      - name: Start full stack
+      - name: Start services
         run: |
           docker compose up -d minio mlflow fastapi
           # wait for MLflow API
