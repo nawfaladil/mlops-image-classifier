@@ -37,7 +37,7 @@ jobs:
 
       # 3) SETUP KinD CLUSTER
       - name: Set up KinD cluster
-        uses: engineerd/setup-kind@v0.6.0
+        uses: engineerd/setup-kind@v0.11.1
         with:
           version: v0.24.0
           cluster-name: fastapi-ci
