@@ -24,7 +24,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r FastAPI/requirements.txt
-          pip install -r tests/requirements-dev.txt
+          pip install -r requirements-dev.txt
 
       # 4) run your unit tests
       - name: Run pytest
