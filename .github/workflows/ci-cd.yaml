@@ -26,6 +26,17 @@ jobs:
           pip install -r FastAPI/requirements.txt
           pip install -r tests/requirements-dev.txt
 
+      - name: Start Docker containers
+        run: |
+          docker-compose up -d
+          # wait for everything to be healthy
+          echo "🕓 waiting for MLflow to come up…"
+          until curl --silent http://localhost:5000/health; do sleep 5; done
+          echo "✅ MLflow healthy"
+          echo "🕓 waiting for FastAPI…"
+          until curl --silent http://localhost:8000/; do sleep 5; done
+          echo "✅ FastAPI healthy"
+
       # 4) run your unit tests
       - name: Run pytest
         run: |
