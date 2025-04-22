@@ -31,19 +31,17 @@ default_args = {
 dag = DAG(
     dag_id='retraining_pipeline',
     default_args=default_args,
-    schedule_interval='@daily',  # or set to None for manual triggering
+    schedule_interval='@daily',
     catchup=False
 )
 
-# Task 1: Vérifier la présence de nouvelles données dans le bucket MinIO.
 s3_client = boto3.client(
     's3',
-    endpoint_url='http://minio:9000',  # Use the service name if in the same Docker network
+    endpoint_url='http://minio:9000',
     aws_access_key_id='minioadmin',
     aws_secret_access_key='minioadmin'
 )
 
-# A simple downstream task to log that new data has been detected
 def new_data_detected(**kwargs):
     grass_keys = list_keys(PREFIX_GRASS, s3_client, BUCKET_NAME)
     dandelion_keys = list_keys(PREFIX_DANDELION, s3_client, BUCKET_NAME)

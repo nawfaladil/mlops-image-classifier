@@ -18,7 +18,7 @@ mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000"))
 MODEL_NAME = "MyModel"
 MODEL_VERSION = "latest"
 
-# Define a response model.
+# Define a response model
 class PredictionResponse(BaseModel):
     predicted_class: str
     confidence: float
@@ -81,17 +81,8 @@ async def predict(file: UploadFile = File(...)):
 
     # Get prediction.
     try:
-        # Depending on how the model was saved using MLflow,
-        # the loaded model might not be a standard PyTorch nn.Module.
-        # If it is a mlflow.pyfunc, it usually expects a pandas DataFrame.
-        # However, if you've logged a standard PyTorch model, you may be able to call eval()
-        # on it. For example, if you registered and loaded it with mlflow.pytorch.log_model,
-        # the object is a PyTorch nn.Module.
-        #
-        # Here, we check if the model has the "eval" attribute:
         model.eval()
         with torch.no_grad():
-            # Model output should be a tensor of logits.
             output = model(input_tensor)
         # Apply softmax to obtain probabilities.
         probabilities = torch.nn.functional.softmax(output, dim=1)

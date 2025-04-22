@@ -3,25 +3,23 @@ from PIL import Image
 import torchvision.transforms as transforms
 import torch
 
-# Définir le pipeline de transformation pour ResNet
 preprocess = transforms.Compose([
-    transforms.Resize(256),          # Redimensionner le côté le plus court à 256 pixels
-    transforms.CenterCrop(224),      # Recadrage central pour obtenir 224x224
-    transforms.ToTensor(),           # Conversion en tenseur
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],  # Normalisation selon ImageNet
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225])
 ])
 
-# Pipeline d'augmentation pour l'entraînement
 data_augmentation_transforms = transforms.Compose([
-    transforms.RandomHorizontalFlip(p=0.5),       # Flip horizontal aléatoire
-    transforms.RandomRotation(degrees=15),        # Rotation aléatoire jusqu'à 15°
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(degrees=15),
     transforms.ColorJitter(brightness=0.2,
                            contrast=0.2,
                            saturation=0.2,
-                           hue=0.1),          # Modification aléatoire des couleurs
-    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)), # Recadrage aléatoire et redimensionnement
-    transforms.ToTensor(),                        # Conversion en tenseur PyTorch
+                           hue=0.1),
+    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+    transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
@@ -34,7 +32,6 @@ def list_keys(prefix, s3_client, bucket):
     return []
 
 
-# Exemple d'utilisation sur une image chargée depuis votre bucket
 def preprocess_image_from_key(key, s3_client, bucket):
     """preprocessing pipeline"""
     obj = s3_client.get_object(Bucket=bucket, Key=key)

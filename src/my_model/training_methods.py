@@ -19,14 +19,13 @@ class MinIODataset(Dataset):
         label: Optionally, the label for all images in this dataset.
     """
     def __init__(self, s3_client, bucket_name, prefix, label=None):
-        self.s3_client = s3_client  # This client will be excluded from pickling.
+        self.s3_client = s3_client
         self.bucket_name = bucket_name
         self.prefix = prefix
         self.label = label
         self.keys = self._list_keys()
 
     def _list_keys(self):
-        # Ensure the s3_client is initialized before usage.
         if self.s3_client is None:
             self._initialize_s3_client()
         keys = []
@@ -41,13 +40,11 @@ class MinIODataset(Dataset):
         return len(self.keys)
 
     def __getitem__(self, idx):
-        # On each worker, ensure s3_client is available
         if self.s3_client is None:
             self._initialize_s3_client()
         key = self.keys[idx]
         obj = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
         data = obj['Body'].read()
-        # Here, we assume your images have been serialized via torch.save
         tensor = torch.load(io.BytesIO(data))
         return tensor, self.label
 
@@ -61,13 +58,11 @@ class MinIODataset(Dataset):
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        # Remove the unpickleable s3_client from the state
         state['s3_client'] = None
         return state
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        # Reinitialize the s3_client if it's missing
         if self.s3_client is None:
             self._initialize_s3_client()
 
@@ -145,7 +140,7 @@ def evaluate_model(model, test_loader, criterion, device):
     """
     Evaluate the model on the test set.
     """
-    model.eval()  # Set the model to evaluation mode
+    model.eval()
     running_loss = 0.0
     running_corrects = 0
     total_samples = 0

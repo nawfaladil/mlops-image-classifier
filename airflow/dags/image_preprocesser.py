@@ -13,7 +13,6 @@ default_args = {
 
 BUCKET_NAME = 'mlops-bucket'
 
-# Configuration du client boto3 (adapter l'endpoint si Airflow tourne dans Docker)
 s3_client_minio = boto3.client(
     's3',
     endpoint_url='http://minio:9000',
@@ -29,7 +28,6 @@ def process_new_images(**context):
       - Réuploade les images traitées dans un préfixe 'processed' et 'augmented'
       - Affiche les clés traitées
     """
-    # Exemple pour "grass" et "dandelion"
     prefixes = {
         'grass': 'images/raw/grass',
         'dandelion': 'images/raw/dandelion'
@@ -63,4 +61,4 @@ with DAG(
         provide_context=True
     )
 
-    process_images  # Une seule tâche pour cet exemple
+    process_images

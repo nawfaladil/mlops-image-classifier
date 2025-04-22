@@ -73,21 +73,17 @@ with DAG(
             if response.status_code != 200:
                 raise Exception(f"Erreur lors du téléchargement de {url_source}")
 
-            # Prépare le contenu de l'image en mémoire
             file_obj = BytesIO(response.content)
 
-            # Nommer le fichier avec l'id et placer dans un dossier selon le label
             file_name = f"{img_id}.jpg"
             key = f"images/raw/{label}/{file_name}"
 
-            # Upload direct vers MinIO avec boto3
             s3_client.put_object(
                 Bucket=bucket_name,
                 Key=key,
                 Body=file_obj.getvalue()
             )
 
-            # Construit l'URL S3 (format s3://...)
             url_s3 = f"s3://{bucket_name}/{key}"
 
             updated_rows.append({'id': img_id, 'url_s3': url_s3})
@@ -117,7 +113,6 @@ with DAG(
         cursor.close()
         conn.close()
 
-    # Déclaration des tâches
     fetch_urls = PythonOperator(
         task_id='fetch_urls_from_db',
         python_callable=fetch_urls_from_db,
@@ -136,5 +131,4 @@ with DAG(
         provide_context=True
     )
 
-    # Ordonnancement des tâches
     fetch_urls >> upload_images >> update_db

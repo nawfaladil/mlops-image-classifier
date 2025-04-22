@@ -23,10 +23,9 @@ BUCKET_NAME = 'mlops-bucket'
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-NUM_CLASSES = 2  # Adjust based on your dataset
+NUM_CLASSES = 2
 
 
-# Configurer MLflow pour pointer vers le serveur MLflow en Docker
 RUN_NAME = f'Learning rate={LEARNING_RATE}'
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment('Resnet18_finetune')

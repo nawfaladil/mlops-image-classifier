@@ -1,6 +1,6 @@
 services:
   mysql:
-    build: ./data/metadata  # Utilise le Dockerfile MySQL dans le dossier database
+    build: ./data/metadata
     container_name: mysql_db
     restart: always
     environment:
@@ -30,7 +30,7 @@ services:
     ports:
       - "8085:8080"
     volumes:
-      - ./airflow/dags:/opt/airflow/dags  # Partage les DAGs entre l'hôte et le conteneur
+      - ./airflow/dags:/opt/airflow/dags
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
@@ -68,19 +68,18 @@ services:
     volumes:
       - ./mlflow/mlflow_db:/mlflow_db
   fastapi:
-    build: ./FastAPI  # Path to the directory with your FastAPI Dockerfile and app
+    build: ./FastAPI
     container_name: fastapi
     restart: always
     ports:
       - "8000:8000"
     depends_on:
-      - mlflow  # If your API depends on mlflow being available
+      - mlflow
     environment:
-      # Optionally, you can pass MLFLOW and other configuration as environment variables if needed
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
   gradio:
-    build: ./gradio  # Directory where your Gradio frontend code and Dockerfile are located
+    build: ./gradio
     container_name: gradio
     restart: always
     ports:

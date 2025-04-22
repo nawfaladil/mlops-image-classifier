@@ -3,8 +3,7 @@ import requests
 from PIL import Image
 import io
 
-# URL of your FastAPI prediction endpoint.
-# Adjust the host and port if necessary (e.g., if running via Docker, use the container name).
+
 API_URL = "http://fastapi:8000/predict"
 
 def predict_via_api(image: Image.Image) -> str:
@@ -47,5 +46,5 @@ iface = gr.Interface(
 )
 
 if __name__ == "__main__":
-    # Launch Gradio on port 7860; available at http://localhost:7860
+    # Launch Gradio on port 7860
     iface.launch(server_name="0.0.0.0", server_port=7860)

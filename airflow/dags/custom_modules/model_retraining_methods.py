@@ -16,10 +16,10 @@ PREFIX_DANDELION = 'images/raw/new_data/dandelion'
 
 
 preprocess = transforms.Compose([
-    transforms.Resize(256),          # Redimensionner le côté le plus court à 256 pixels
-    transforms.CenterCrop(224),      # Recadrage central pour obtenir 224x224
-    transforms.ToTensor(),           # Conversion en tenseur
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],  # Normalisation selon ImageNet
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225])
 ])
 
@@ -75,15 +75,14 @@ def fine_tune_existing_model(existing_model_uri, bucket_name, s3_client, labels,
     num_epochs = additional_params.get("num_epochs", 10)
     batch_size = additional_params.get("batch_size", 32)
 
-    # Create a transform if needed (here we assume the tensors are already sized [3, 224, 224])
-    transform = None  # or define any additional transforms if needed
+    transform = None
 
     # Create dataset for new data
     new_data_grass = NewDataDataset(
         s3_client=s3_client,
         bucket_name=bucket_name,
         prefix=PREFIX_GRASS,
-        label=0,  # Set label if supervised fine-tuning is needed.
+        label=0,
         transform=transform
     )
     
@@ -91,7 +90,7 @@ def fine_tune_existing_model(existing_model_uri, bucket_name, s3_client, labels,
         s3_client=s3_client,
         bucket_name=bucket_name,
         prefix=PREFIX_DANDELION,
-        label=1,  # Set label if supervised fine-tuning is needed.
+        label=1,
         transform=transform
     )
     
@@ -100,7 +99,6 @@ def fine_tune_existing_model(existing_model_uri, bucket_name, s3_client, labels,
         new_data_dandelion
     ])
 
-    # Optionally split new data into training and validation sets; here we use 80/20 split:
     dataset_size = len(full_dataset)
     train_size = int(0.8 * dataset_size)
     val_size = dataset_size - train_size
@@ -191,7 +189,6 @@ def move_new_data_to_treated(source_prefix, target_prefix, bucket_name=None, s3_
     """
 
     
-    # List keys in the new_data folder using your existing function
     keys = list_keys(source_prefix, s3_client, bucket_name)
     
     if not keys:
@@ -199,15 +196,12 @@ def move_new_data_to_treated(source_prefix, target_prefix, bucket_name=None, s3_
         return "No data moved"
     
     for key in keys:
-        # Derive the new key by replacing the source prefix with the target prefix.
         target_key = key.replace(source_prefix, target_prefix, 1)
         
-        # Copy the object to the new location
         copy_source = {'Bucket': bucket_name, 'Key': key}
         s3_client.copy_object(CopySource=copy_source, Bucket=bucket_name, Key=target_key)
         print(f"Copied {key} to {target_key}")
         
-        # Delete the original object
         s3_client.delete_object(Bucket=bucket_name, Key=key)
         print(f"Deleted original key {key}")
     

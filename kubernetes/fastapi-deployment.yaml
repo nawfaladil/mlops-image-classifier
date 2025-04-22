@@ -39,7 +39,6 @@ spec:
               value: "minioadmin"
             - name: AWS_SECRET_ACCESS_KEY
               value: "minioadmin"
-          # Add any other required environment variables here.
 ---
 apiVersion: v1
 kind: Service
@@ -52,4 +51,4 @@ spec:
   ports:
     - protocol: TCP
       port: 8000       # The port by which the service is exposed in the cluster
-      targetPort: 8001   # The container port where your FastAPI app listens
+      targetPort: 8001   # The container port where FastAPI app listens
