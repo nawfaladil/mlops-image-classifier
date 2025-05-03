@@ -18,7 +18,9 @@ services:
       retries: 5
       start_period: 20s
   airflow:
-    build: ./airflow
+    build: 
+      context : ./
+      dockerfile : ./airflow/Dockerfile
     container_name: airflow_container
     depends_on:
       mysql:
@@ -32,6 +34,8 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
     environment:
+      - _AIRFLOW_WWW_USER_USERNAME=airflow  # the user you want
+      - _AIRFLOW_WWW_USER_PASSWORD=airflow  # the password you want
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://mlops_user:mlops_pass@mysql_db/mlops_db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
