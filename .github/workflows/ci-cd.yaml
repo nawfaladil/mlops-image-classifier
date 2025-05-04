@@ -38,7 +38,7 @@ jobs:
           pip install -r FastAPI/requirements.txt
           pip install -r tests/requirements-dev.txt
           pip install torch==2.2.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-          pip install torchvision==0.17.1+cpu
+          pip install torchvision==0.17.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
       - name: Run pytest
         run: pytest tests --maxfail=1 --disable-warnings -q
