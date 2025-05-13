@@ -57,7 +57,7 @@ with DAG(
         # Créez un client boto3 pour MinIO
         s3_client = boto3.client(
             's3',
-            endpoint_url='http://minio:9000',  # Depuis le conteneur Airflow, utilisez le nom de service "minio"
+            endpoint_url='http://minio:9000',
             aws_access_key_id='minioadmin',
             aws_secret_access_key='minioadmin'
         )
