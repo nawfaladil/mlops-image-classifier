@@ -5,4 +5,3 @@ mlflow
 Pillow
 python-multipart
 boto3
-numpy
