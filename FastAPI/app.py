@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from contextlib import asynccontextmanager
 from pydantic import BaseModel
 from PIL import Image
 import torchvision.transforms as transforms
@@ -23,21 +24,23 @@ class PredictionResponse(BaseModel):
     predicted_class: str
     confidence: float
 
-app = FastAPI(title="Image Prediction API")
-
 # Global variable to store the model.
 model = None
 
-@app.lifespan("startup")
-def load_model_on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global model
     try:
         model_uri = f"models:/{MODEL_NAME}/{MODEL_VERSION}"
         model = mlflow.pytorch.load_model(model_uri)
         print("Model loaded successfully!")
+        yield
+        model.clear()
     except Exception as e:
         print(f"Failed to load model: {e}")
         raise
+
+app = FastAPI(title="Image Prediction API", lifespan=lifespan)
 
 # Define the preprocessing transform.
 preprocess = transforms.Compose([
