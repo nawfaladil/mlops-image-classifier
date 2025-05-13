@@ -28,7 +28,7 @@ app = FastAPI(title="Image Prediction API")
 # Global variable to store the model.
 model = None
 
-@app.on_event("startup")
+@app.lifespan("startup")
 def load_model_on_startup():
     global model
     try:
