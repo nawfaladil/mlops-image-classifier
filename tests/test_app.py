@@ -2,6 +2,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from FastAPI.app import app
+import numpy
 
 client = TestClient(app)
 
