@@ -49,3 +49,9 @@ Développement d’un pipeline MLOps complet pour la classification d’images d
 ## ☸️ Déploiement avec Kubernetes
 
 Le déploiement est fait avec l'image de fast api uploadée sur docker hub, le déploiement est donc mis à jour après le push automatique de github actions.
+
+---
+
+## Dév/production
+
+Pour simuler un environement de développement et un environement de production séparés, nous avons travaillé avec deux branches différentes : une branch dev et une branch main pour la prod.
